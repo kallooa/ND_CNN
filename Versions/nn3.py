@@ -23,7 +23,6 @@ img_rows, img_cols = 400, 400 #32, 32
 img_channels = 1 #3
 augment_data = False
 learning_rate = 0.001
-images_per_epoch = X_train.shape[0]*2
 
 allimages = np.load('C:\\ML\\Project 1 - Dermoscopy\\Data\\Extracted 1\\imgarray.npy')
 file_df = pd.read_csv('C:\\ML\\Project 1 - Dermoscopy\\Data\\Extracted 1\\Extracted1_AllImages_Status.csv')
@@ -63,7 +62,7 @@ X_test = X_test[:, np.newaxis, :, :]
 del shuffled_images, allimages
 #Y_train = Y_train[:, np.newaxis, :, :]
 #Y_test = Y_test[:, np.newaxis, :, :]
-
+images_per_epoch = X_train.shape[0]*2
 # the data, shuffled and split between train and test sets
 #(X_train, y_train), (X_test, y_test) = cifar10.load_data()
 #print('X_train shape:', X_train.shape)
