@@ -1,0 +1,11 @@
+Note date: 8/19/2016
+Dataset: Extracted1 
+  Used emarens 1 - 50
+  Contains 452 Dermoscopy and 814 Non-Dermoscopy images
+  Extracted1 contains images sorted by dermoscopy vs not dermoscopy
+  For dermoscopic photos, those images containing excessive hair were removed from the dermoscopic set. 
+  Those photos that were likely dermoscopic but were missing the scale bar were excluded
+  Non-dermoscopic photos were reviewed to ensure no photos contained a dermoscopic scale bar
+packages used: keras, theano, pandas, numpy
+
+
