@@ -4,51 +4,6 @@ Not using data augmentation.
 
 Train on 1012 samples, validate on 253 samples
 Epoch 1/200
-1012/1012 [==============================] - 42s - loss: 0.8533 - acc: 0.6344 - val_loss: 0.6387 - val_acc: 0.6522
-Epoch 2/200
-1012/1012 [==============================] - 43s - loss: 0.6512 - acc: 0.6413 - val_loss: 0.6402 - val_acc: 0.6522
-Epoch 3/200
-1012/1012 [==============================] - 45s - loss: 0.6509 - acc: 0.6413 - val_loss: 0.6138 - val_acc: 0.6522
-Epoch 4/200
-1012/1012 [==============================] - 45s - loss: 0.6275 - acc: 0.6443 - val_loss: 0.6519 - val_acc: 0.6522
-Epoch 5/200
-1012/1012 [==============================] - 45s - loss: 0.6552 - acc: 0.6413 - val_loss: 0.6442 - val_acc: 0.6522
-Epoch 6/200
-1012/1012 [==============================] - 45s - loss: 0.7632 - acc: 0.6304 - val_loss: 0.6471 - val_acc: 0.6522
-Epoch 7/200
-1012/1012 [==============================] - 45s - loss: 0.6649 - acc: 0.6413 - val_loss: 0.6467 - val_acc: 0.6522
-Epoch 8/200
-1012/1012 [==============================] - 45s - loss: 0.6580 - acc: 0.6413 - val_loss: 0.6466 - val_acc: 0.6522
-Epoch 9/200
-1012/1012 [==============================] - 44s - loss: 0.6532 - acc: 0.6413 - val_loss: 0.6467 - val_acc: 0.6522
-Epoch 10/200
-1012/1012 [==============================] - 44s - loss: 0.6534 - acc: 0.6413 - val_loss: 0.6462 - val_acc: 0.6522
-Epoch 11/200
-1012/1012 [==============================] - 44s - loss: 0.6531 - acc: 0.6413 - val_loss: 0.6463 - val_acc: 0.6522
-Epoch 12/200
-1012/1012 [==============================] - 44s - loss: 0.6531 - acc: 0.6413 - val_loss: 0.6461 - val_acc: 0.6522
-Epoch 13/200
-1012/1012 [==============================] - 45s - loss: 0.6530 - acc: 0.6413 - val_loss: 0.6464 - val_acc: 0.6522
-Epoch 14/200
-1012/1012 [==============================] - 45s - loss: 0.6527 - acc: 0.6413 - val_loss: 0.6463 - val_acc: 0.6522
-Epoch 15/200
- 384/1012 [==========>...................] - ETA: 26s - loss: 0.6522 - acc: 0.6432forrtl: error (200): program aborting due to control-C event
-Image              PC                Routine            Line        Source
-libifcoremd.dll    00007FFCB2B243E4  Unknown               Unknown  Unknown
-KERNELBASE.dll     00007FFCDD356634  Unknown               Unknown  Unknown
-KERNEL32.DLL       00007FFCDDDB8102  Unknown               Unknown  Unknown
-ntdll.dll          00007FFCE03DC5B4  Unknown               Unknown  Unknown
-
-C:\ML\Project 1 - Dermoscopy\Scripts>python cifar10_cnn.py
-Using Theano backend.
-3
-Using gpu device 0: GeForce GTX TITAN X (CNMeM is enabled with initial size: 81.0% of memory, cuDNN 5005)
-Not using data augmentation.
-3
-3
-3
-Train on 1012 samples, validate on 253 samples
-Epoch 1/200
 1012/1012 [==============================] - 24s - loss: 0.6739 - acc: 0.6215 - val_loss: 0.6333 - val_acc: 0.6482
 Epoch 2/200
 1012/1012 [==============================] - 24s - loss: 0.6388 - acc: 0.6403 - val_loss: 0.6357 - val_acc: 0.8063
