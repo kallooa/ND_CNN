@@ -139,4 +139,4 @@ else:
                         samples_per_epoch=images_per_epoch,
                         nb_epoch=nb_epoch,
                         validation_data=(X_test, Y_test))
-model.save('C:\\ML\\Project 1 - Dermoscopy\\model1.h5')
+model.save('C:\\ML\\Project 1 - Dermoscopy\\Results\\nn3.h5')
