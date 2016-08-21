@@ -19,7 +19,7 @@ Dataset: Extracted 1 with Keras ImageDataGenerator augmentation
 Files: nn3.py, nn3.txt
   Trained with 2024 images per epoch, batch size 48, 200 epochs
   Validation accuracy in the range of 93-95%
-  Model saved as model1.h5
+  Model saved as nn3.h5
   
 To get ROC curve:
   y_score = my_model.predict_proba(X_val)
