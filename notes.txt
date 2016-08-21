@@ -9,3 +9,7 @@ Dataset: Extracted1
 packages used: keras, theano, pandas, numpy
 
 
+Note date: 8/21/2016
+Dataset: Extracted1 with horizontal and vertical flip augmentation; 4x increase
+  Learning rate of 0.001 seemed to be best when testing runs of ~10 epochs but seems to be caught in local minima for epochs 35-55 and counting
+  
