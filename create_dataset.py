@@ -30,7 +30,7 @@ def extract_scalebar(file):
 	laplacian = cv2.GaussianBlur(laplacian, (3, 3), 0) #blur image
 	laplacian = (255 - laplacian) #invert color/gray values
 	ret, laplacian = cv2.threshold(laplacian, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU) #use Otsu adaptive thresholding to extract scale bar
-	laplacian = cv2.resize(laplacian, (500, 500)) #convert to 500x500 and return
+	laplacian = cv2.resize(laplacian, (400, 400)) #convert to 500x500 and return
 	return laplacian
 
 def create_image_array(filelist, images_path): #only needs to be done once for an image set and then ndarray can be saved
