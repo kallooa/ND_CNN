@@ -31,7 +31,6 @@ Files: nn4.py, nn4.txt
 
 Note date: 8/26/2016
 Dataset: Extracted 1-8 + MEU (28000 total images)
-Files: nn5.py, nn5.txt
   Trained with ~21000 images per epoch, batch size 32, 200 epochs
   Loss at ~0.1000 at epoch 23
   Training showed very strong indicators of overfitting
@@ -39,7 +38,8 @@ Files: nn5.py, nn5.txt
 Note date: 8/26/2016
 Tried above dataset and network with l1 and l2 regularization (separately), both with values of 0.01. Did not seem to work
 
-
+Note date: 8/26/2016
+Running nn4 network with dropout increased to 0.5, 0.5, 0.8
   
 To get ROC curve:
   y_score = my_model.predict_proba(X_val)
