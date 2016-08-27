@@ -40,6 +40,12 @@ Tried above dataset and network with l1 and l2 regularization (separately), both
 
 Note date: 8/26/2016
 Running nn4 network with dropout increased to 0.5, 0.5, 0.8
+
+Note date: 8/27/2016
+Added additional fully connected layer with output dim =128
+Running with 5000 samples per epoch
+Expected to finish training with 94% val accuracy
+Plan on using output of nn in classifier utilizing color histogram vectors
   
 To get ROC curve:
   y_score = my_model.predict_proba(X_val)
