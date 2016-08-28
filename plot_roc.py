@@ -27,9 +27,11 @@ img_channels = 1 #3
 augment_data = False
 learning_rate = 0.001
 
-allimages = np.load('C:\\ML\\Project 1 - Dermoscopy\\Data\\Extracted 1\\imgarray.npy')
-file_df = pd.read_csv('C:\\ML\\Project 1 - Dermoscopy\\Data\\Extracted 1\\Extracted1_AllImages_Status.csv')
-model = load_model('C:\\ML\\Project 1 - Dermoscopy\\Results\\nn3.h5')
+csv_path = 'D:\\Research\\DermData\\Dermoscopic_Status.csv' #location of csv with filename and dermoscopy status; columns: Filename, Status
+
+allimages = np.load('C:\\ML\\Project 1 - Dermoscopy\\Data\\derm15000.npy')
+file_df = pd.read_csv(csv_path)
+model = load_model('C:\\ML\\Project 1 - Dermoscopy\\Results\\nn4.h5')
 
 shuffled_indices = np.random.permutation(np.arange(len(file_df)))
 shuffled_images = allimages[shuffled_indices]
@@ -62,7 +64,7 @@ roc_auc = auc(false_positive_rate, true_positive_rate)
 
 plt.title('Receiver Operating Characteristic')
 plt.plot(false_positive_rate, true_positive_rate, 'b',
-label='AUC = %0.2f'% roc_auc)
+label='AUC = %0.4f'% roc_auc)
 plt.legend(loc='lower right')
 plt.plot([0,1],[0,1],'r--')
 plt.xlim([-0.1,1.2])

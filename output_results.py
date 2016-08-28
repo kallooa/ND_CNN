@@ -12,49 +12,66 @@ import numpy as np
 import pandas as pd
 import random
 import math
-import cv2
+#import cv2
 import sklearn
 from sklearn.metrics import auc, roc_curve
+from sklearn import svm
+from sklearn.metrics import accuracy_score
+from sklearn.externals import joblib
+from sklearn.ensemble import RandomForestClassifier
 
-def get_file_list(csvpath):
-	#onlyfiles = [f for f in listdir(mypath) if isfile(join(mypath, f))] #read all files in mypath; uses os module
-	files_df = pd.read_csv(csvpath) #read csv with pandas function
-	onlyfiles = files_df['Filename'] #select only filename column
-	return onlyfiles #return list of image files
+def form_hist_2D_array(image_array_with_filenames, result_array, wantStatus):
+	hist_data = image_array_with_filenames[..., 3] #...,3]
+	hist_data = np.dstack(hist_data)
+	hist_data = hist_data.reshape(hist_data.shape[1:])
+	hist_data = np.rollaxis(hist_data, -1)
+	status_array = []
+	if wantStatus:
+		status_array = image_array_with_filenames[...,2]
+	#status_array = status_array.tolist()
+	#status_array = np.asarray(status_array)
+	#status_array.shape
+	#np.concatenate((hist_data, result_array), axis =1)
+	hist_data = np.insert(hist_data, 0, values=result_array, axis=1)
+	#hist_data.shape
+	#result_array.shape
+	return hist_data, status_array
 
-def extract_scalebar(file):
-	img0 = cv2.imread(file) #read image
-	img = cv2.cvtColor(img0, cv2.COLOR_BGR2GRAY) #convert image to grayscale
-	kernel = np.ones((2,2), np.float32)/4 #create 2x2 kernel for smoothing
-	img = cv2.filter2D(img, -1, kernel) #smooth image
-	laplacian = cv2.Laplacian(img, cv2.CV_8U) #use laplacian filter ("edge detector") to find edges and lines
-	laplacian = cv2.filter2D(laplacian, -1, kernel) #smooth image
-	laplacian = cv2.GaussianBlur(laplacian, (3, 3), 0) #blur image
-	laplacian = (255 - laplacian) #invert color/gray values
-	ret, laplacian = cv2.threshold(laplacian, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU) #use Otsu adaptive thresholding to extract scale bar
-	laplacian = cv2.resize(laplacian, (400, 400)) #convert to 500x500 and return
-	return laplacian
+def reshape_image_array(image_array):
+	image_array = image_array_with_filenames[..., 0]
+	image_array = np.dstack(image_array)
+	image_array = np.rollaxis(image_array, -1)
+	image_array = image_array[:, np.newaxis, :, :]
+	return image_array
+
+def make_decision(processed_image_array, model):
+	y_score = model.predict_proba(processed_image_array)
+	#print(filename, ': ', y_score)
+	return y_score
+
+
+if __name__ == '__main__':
+	wantStatus = False
+	image_array_with_filenames = np.load('D:\\Research\\DermData\\Extracted Backup\\Extracted 9\\results_extracted9.npy') #location of images
+	pickle_loc = 'C:\\ML\\Project 1 - Dermoscopy\\Results\\RandomForestModel\\RF_model2.pkl'
+	model = load_model('C:\\ML\\Project 1 - Dermoscopy\\Results\\nn5.h5')
+	dermfoler = 'dermoscopic\\'
+	filename_array = image_array_with_filenames[..., 1]
+	image_array = reshape_image_array(image_array_with_filenames)
+	#status_array = image_array_with_filenames[...,2]
+	#del image_array_with_filenames
+	#list_of_images = get_file_list(csv_path)
+	nnresults = make_decision(image_array, model)
+	nnresults= nnresults[...,1] #probability of being 1 (dermoscopic)
+	rfmodel = joblib.load(pickle_loc)
+
+	hist_data, status_array = form_hist_2D_array(image_array_with_filenames, nnresults, wantStatus)
+	preds = model.predict(hist_data)
+	#results = np.concatenate((filename_array, nnresults), axis=1)
+	#np.save('C:\\ML\\Project 1 - Dermoscopy\\Data\\results1', nnresults)
+	results = pd.DataFrame(filename_array, columns = ['filename'])
+	results['prediction'] = preds
+	#results['color_hist'] = image_array_with_filenames[..., 2] #...,2]
 	
-def make_decision(laplac_image):
-  y_score = model.predict_proba(laplac_image)
-  return y_score
-
-def create_result_array(filelist, images_path): #only needs to be done once for an image set and then ndarray can be saved
-	for im in range(0, len(filelist)):
-		fname = filelist[im] #filename
-		file = images_path + fname #full file path
-		image = extract_scalebar(file) #get image with scalebar extracted
-		result = make_decision(laplac_image)
-		result_array = result
-		if im > 1: #im will be >1 most of the time and next elifs can be skipped
-			result_array = np.concatenate((result_array, result), axis = 0) #concatenate arrays on axis 0 to allow for easy indexing
-		if (im % 10) == 0:
-			print('Read %f of %f', (im, len(filelist)))
-	return result_array
-
-image_path = 'C:\\ML\\Data\\Dermoscopy\\Extracted 1\\AllImages\\' #location of images
-csv_path = 'C:\\ML\\Data\\Dermoscopy\\Extracted 1\\Extracted1_AllImages_Status.csv' #location of csv with filename and dermoscopy status; columns: Filename, Status
-model = load_model('C:\\ML\\Project 1 - Dermoscopy\\Results\\nn4.h5')
-
-list_of_images = get_file_list(csv_path)
-result_array = create_result_array(list_of_images, image_path)
+	results.to_csv('C:\\ML\\Project 1 - Dermoscopy\\Results\\results_extracted9.csv')
+	print("Results written!")

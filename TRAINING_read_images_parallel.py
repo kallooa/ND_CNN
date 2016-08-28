@@ -12,16 +12,13 @@ import time
 from imutils import paths
 import imutils
 import os
-from os import listdir
-from os.path import isfile
 
-def get_file_list(mypath):
-	inc_extensions = ['jpg', 'png']
-	onlyfiles = [f for f in listdir(mypath) if any(f.endswith(ext) for ext in inc_extensions)]#isfile((mypath + f))] #read all files in mypath; uses os module
-	#files_df = pd.read_csv(csv_path) #read csv with pandas function
-	#onlyfiles = files_df['Filename'] #select only filename column
-	#status_df = files_df['Status']
-	return onlyfiles#return list of image files
+def get_file_list(csv_path):
+	#onlyfiles = [f for f in listdir(mypath) if isfile(join(mypath, f))] #read all files in mypath; uses os module
+	files_df = pd.read_csv(csv_path) #read csv with pandas function
+	onlyfiles = files_df['Filename'] #select only filename column
+	status_df = files_df['Status']
+	return onlyfiles, status_df #return list of image files
 
 def extract_color_histogram(image, bins=(8*3, 8*3, 8*3)):
 	# extract a 3D color histogram from the HSV color space using
@@ -41,7 +38,7 @@ def extract_color_histogram(image, bins=(8*3, 8*3, 8*3)):
 	# return the flattened histogram as the feature vector
 	return hist.flatten()
 
-def readImage(num, file, image_path):
+def readImage(num, file, image_path, wantStatus, status_df=[]):
 	file = image_path + file
 	img0 = cv2.imread(file) #read image
 	print("Read ", file)
@@ -56,20 +53,21 @@ def readImage(num, file, image_path):
 	laplacian = cv2.GaussianBlur(laplacian, (7, 7), 0) #blur image
 	ret, laplacian = cv2.threshold(laplacian, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU) #use Otsu adaptive thresholding to extract scale bar
 	laplacian = cv2.resize(laplacian, (400, 400)) #convert to 500x500 and return
-	#status = status_df[num]
-	return (laplacian, file, color_hist)
+	status = status_df[num]
+	return (laplacian, file, color_hist, status)
 	
 if __name__ == '__main__':
-	image_path = 'D:\\Research\\DermData\\Extracted Backup\\Extracted 9\\' #location of images
-	#csv_path = 'C:\\ML\\Project 1 - Dermoscopy\\Data\\AllwithMEU\\Dermoscopic_Status_withMEU.csv' #location of csv with filename and dermoscopy status; columns: Filename, Status
+	wantStatus = True
+	image_path = 'C:\\ML\\Project 1 - Dermoscopy\\Data\\AllwithMEU\\AllImages\\' #location of images
+	csv_path = 'C:\\ML\\Project 1 - Dermoscopy\\Data\\AllwithMEU\\Dermoscopic_Status_withMEU.csv' #location of csv with filename and dermoscopy status; columns: Filename, Status
 	#model = load_model('C:\\ML\\Project 1 - Dermoscopy\\Results\\nn4.h5')
-	list_of_images = get_file_list(image_path)
+	list_of_images, status_df = get_file_list(csv_path)
 	#list_of_images = list_of_images[0:1000]
 	time1 = time.time()
 	num_cores = multiprocessing.cpu_count()
-	results_array = joblib.Parallel(n_jobs=num_cores)(joblib.delayed(readImage)(i, image, image_path) for i, image in enumerate(list_of_images))
+	result_array = joblib.Parallel(n_jobs=num_cores)(joblib.delayed(readImage)(i, image, image_path, wantStatus, status_df) for i, image in enumerate(list_of_images))
 	time2 = time.time()
 	print('read function took %0.3f ms' % ((time2-time1)*1000))
 	print("Saving...")
-	np.save('D:\\Research\\DermData\\Extracted Backup\\Extracted 9\\results_extracted9', results_array)
+	np.save('C:\\ML\\Project 1 - Dermoscopy\\Data\\results_allwithMEU_chist', result_array)
 	print("Model saved.")
