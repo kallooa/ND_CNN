@@ -12,6 +12,7 @@ from sklearn.metrics import auc, roc_curve
 from sklearn.metrics import accuracy_score
 from sklearn.externals import joblib
 from sklearn.ensemble import RandomForestClassifier
+from sklearn.naive_bayes import BernoulliNB
 
 
 def load_data(nnmodel_path, results, image_array_path):
@@ -54,7 +55,7 @@ def output_metric_results(crosstabresults, score):
 def train_RF(hist_data, status_array, train_prop):
 	arr_len = len(hist_data)
 	train_len = math.floor(arr_len*train_prop)
-	model = RandomForestClassifier(n_estimators=100, max_features=None, n_jobs=-1, verbose=True)
+	model = BernoulliNB(binarize=None)
 	model.fit(hist_data[0:train_len], status_array[0:train_len])
 	return model, arr_len, train_len
 
@@ -63,7 +64,7 @@ if __name__ == '__main__':
 	nnmodel_path = 'C:\\ML\\Project 1 - Dermoscopy\\Results\\nn5.h5'
 	results = 'C:\\ML\\Project 1 - Dermoscopy\\Results\\nn5_27000_predictions.npy'
 	image_array_path = 'C:\\ML\\Project 1 - Dermoscopy\\Data\\results_allwithMEU_chist.npy'
-	pickle_loc = 'C:\\ML\\Project 1 - Dermoscopy\\Results\\RandomForestModel\\RF_model3.pkl'
+	pickle_loc = 'C:\\ML\\Project 1 - Dermoscopy\\Results\\RandomForestModel\\RF_model3_nb.pkl'
 
 	nn, result_array, image_array_with_filenames = load_data(nnmodel_path, results, image_array_path)
 	hist_data, status_array = form_hist_2D_array(image_array_with_filenames, result_array)

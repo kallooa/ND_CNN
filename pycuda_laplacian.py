@@ -46,7 +46,7 @@ def best_grid_size(size, tpb):
 
 def main():
     # Build Filter
-    laplacian_pts = ''' 0 1 0 1 -4 1 0 1 0'''.split()
+    laplacian_pts = ''' 0 1 0 1 -4 1 0 1 0'''.split() #laplacian filter used by opencv
 
     laplacian = np.array(laplacian_pts, dtype=np.float32).reshape(3, 3)
 

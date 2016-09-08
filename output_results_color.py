@@ -32,11 +32,17 @@ def form_hist_2D_array(image_array_with_filenames, result_array, wantStatus):
 	return hist_data, status_array
 
 def reshape_image_array(image_array):
-	image_array = image_array_with_filenames[..., 0]
-	image_array = np.dstack(image_array)
-	image_array = np.rollaxis(image_array, -1)
-	image_array = image_array[:, np.newaxis, :, :]
-	return image_array
+    tup1 = image_array[:, 0]
+    newarray = tup1[0]
+    newarray = newarray[:, :, :, np.newaxis]
+    for i in range(0, len(tup1)):
+        newarray = np.concatenate((newarray, tup1[i][..., np.newaxis]), axis=3)
+    newarray = np.rollaxis(newarray, -1)
+    newarray = np.rollaxis(newarray, 3, 1)
+    newarray = np.delete(newarray, [0], axis=0)
+    newarray = newarray.astype('float16')
+    print(newarray.shape)
+    return newarray
 
 def make_decision(processed_image_array, model):
 	y_score = model.predict_proba(processed_image_array)
@@ -60,14 +66,15 @@ def output_metric_results(crosstabresults, score):
 
 
 if __name__ == '__main__':
-	wantStatus = False
-	image_array_with_filenames = np.load('G:\\records\\results_1939-3000.npy') #location of images
+	wantStatus = True
+	image_array_with_filenames = np.load('D:\\Research\\color_extracted9.npy') #location of images
 	pickle_loc = 'C:\\ML\\Project 1 - Dermoscopy\\Results\\RandomForestModel\\RF_model3.pkl'
-	model = load_model('C:\\ML\\Project 1 - Dermoscopy\\Results\\nn5.h5')
+	model = load_model('C:\\ML\\Project 1 - Dermoscopy\\Results\\nn6_color.h5')
 	dermfolder = 'G:\\dermoscopic\\'
 
 	filename_array = image_array_with_filenames[..., 1]
 	image_array = reshape_image_array(image_array_with_filenames)
+	print(image_array.shape)
 	nnresults = make_decision(image_array, model)
 	nnresults= nnresults[...,1] #probability of being 1 (dermoscopic)
 	rfmodel = joblib.load(pickle_loc)
@@ -75,11 +82,12 @@ if __name__ == '__main__':
 	preds = rfmodel.predict(hist_data)
 	results = pd.DataFrame(filename_array, columns = ['filename'])
 	results['prediction'] = preds
-	#score = accuracy_score(status_array, preds)
-	#crosstabresults = pd.crosstab(status_array[(train_len+1):arr_len], preds, rownames=['actual'], colnames=['preds:'])
-	#output_metric_results(crosstabresults, score)
+	score = accuracy_score(status_array, preds)
+	crosstabresults = pd.crosstab(status_array, preds, rownames=['actual'], colnames=['preds:'])
+	output_metric_results(crosstabresults, score)
+	'''
 	for index, file in enumerate(results['filename']):
 	    if results.iloc[index, 1] == 1:
-	        os.rename(file, dermfolder+os.path.split(file)[1])
-	results.to_csv('C:\\ML\\Project 1 - Dermoscopy\\Results\\results_1939-3000.csv')
+	        os.rename(file, dermfolder+os.path.split(file)[1])'''
+	results.to_csv('C:\\ML\\Project 1 - Dermoscopy\\Results\\results_extracted9_2.csv')
 	print("Results written!")

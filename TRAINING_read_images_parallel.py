@@ -41,7 +41,9 @@ def extract_color_histogram(image, bins=(8*3, 8*3, 8*3)):
 def readImage(num, file, image_path, wantStatus, status_df=[]):
 	file = image_path + file
 	img0 = cv2.imread(file) #read image
-	print("Read ", file)
+	#print("Read ", file)
+	if num % 100 == 0:
+		print(num) 
 	color_hist = extract_color_histogram(img0)
 	img = cv2.cvtColor(img0, cv2.COLOR_BGR2GRAY) #convert image to grayscale
 	kernel = np.ones((2,2), np.float32)/4 #create 2x2 kernel for smoothing
@@ -52,14 +54,14 @@ def readImage(num, file, image_path, wantStatus, status_df=[]):
 	laplacian = (255 - laplacian) #invert color/gray values
 	laplacian = cv2.GaussianBlur(laplacian, (7, 7), 0) #blur image
 	ret, laplacian = cv2.threshold(laplacian, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU) #use Otsu adaptive thresholding to extract scale bar
-	laplacian = cv2.resize(laplacian, (400, 400)) #convert to 500x500 and return
+	laplacian = cv2.resize(laplacian, (200, 200)) #convert to 500x500 and return
 	status = status_df[num]
 	return (laplacian, file, color_hist, status)
 	
 if __name__ == '__main__':
 	wantStatus = True
-	image_path = 'C:\\ML\\Project 1 - Dermoscopy\\Data\\AllwithMEU\\AllImages\\' #location of images
-	csv_path = 'C:\\ML\\Project 1 - Dermoscopy\\Data\\AllwithMEU\\Dermoscopic_Status_withMEU.csv' #location of csv with filename and dermoscopy status; columns: Filename, Status
+	image_path = 'G:\\AllImages\\' #location of images
+	csv_path = 'G:\\Dermoscopy77000.csv' #location of csv with filename and dermoscopy status; columns: Filename, Status
 	#model = load_model('C:\\ML\\Project 1 - Dermoscopy\\Results\\nn4.h5')
 	list_of_images, status_df = get_file_list(csv_path)
 	#list_of_images = list_of_images[0:1000]
@@ -67,7 +69,7 @@ if __name__ == '__main__':
 	num_cores = multiprocessing.cpu_count()
 	result_array = joblib.Parallel(n_jobs=num_cores)(joblib.delayed(readImage)(i, image, image_path, wantStatus, status_df) for i, image in enumerate(list_of_images))
 	time2 = time.time()
-	print('read function took %0.3f ms' % ((time2-time1)*1000))
+	print('read function took %0.3f s' % ((time2-time1)*1))
 	print("Saving...")
-	np.save('C:\\ML\\Project 1 - Dermoscopy\\Data\\results_allwithMEU_chist', result_array)
+	np.save('C:\\ML\\Project 1 - Dermoscopy\\Data\\images77000_200', result_array)
 	print("Model saved.")
