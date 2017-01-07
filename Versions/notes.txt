@@ -1,0 +1,2 @@
+nn100_color = first working model with color images; used 20 epochs and overfitting occurred
+nn101_color = used 10 epochs; set up for visualizing filters
